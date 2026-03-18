@@ -25,7 +25,7 @@ To help students stay healthy and do better in school by controlling stress. The
 
 ## Code Examples
 
-```javascript
+```python
 # Mini Stress-Helper Program
 
 # Function to give a tip based on hours of sleep
@@ -55,13 +55,29 @@ def stress_tip(level):
 
 print("=== Welcome to the Mini Stress-Helper ===")
 
-# Get user input for sleep
-hours = int(input("How many hours did you sleep yesterday? "))
+# Get user input for sleep (safe input)
+while True:
+    try:
+        hours = float(input("How many hours did you sleep yesterday? "))
+        break
+    except ValueError:
+        print("Please enter a valid number (e.g., 6 or 7.5).")
+
 print(sleep_tip(hours))
 
-# Get user input for stress level
+# Get user input for stress level (safe input)
 print("\nStress Levels: 0=Low, 1=Medium, 2=High")
-stress_level = int(input("Enter your stress level: "))
+
+while True:
+    try:
+        stress_level = int(input("Enter your stress level: "))
+        if 0 <= stress_level <= 2:
+            break
+        else:
+            print("Please enter 0, 1, or 2 only.")
+    except ValueError:
+        print("Please enter a valid integer (0, 1, or 2).")
+
 print(stress_tip(stress_level))
 
 print("\nStay healthy and take care of yourself! 😊")
