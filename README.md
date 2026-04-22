@@ -25,9 +25,8 @@ To help students stay healthy and do better in school by controlling stress. The
 
 ## Code Examples
 ```python
-# import tkinter as tk
+ import tkinter as tk
 from tkinter import messagebox
-
 def sleep_tip(hours_slept):
     if hours_slept < 0:
         return "That's not a valid number of hours!"
