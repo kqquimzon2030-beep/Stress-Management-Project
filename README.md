@@ -25,62 +25,194 @@ To help students stay healthy and do better in school by controlling stress. The
 
 ## Code Examples
 ```python
-        import tkinter as tk
+import tkinter as tk
 from tkinter import messagebox
-def sleep_tip(hours_slept):
-    if hours_slept < 0:
-        return "That's not a valid number of hours!"
-    elif hours_slept < 5:
-        return "You slept very little! Take a short nap and rest. Lack of sleep can increase stress levels and reduce focus."
-    elif 5 <= hours_slept < 8:
-        return "You got some sleep, but try to sleep more tonight for full recovery. Consistent sleep improves mood and energy."
-    else:
-        return "Great! You got enough sleep. Keep it up for a healthy routine and better stress control."
 
+BG = "#0f172a"
+CARD = "#1e293b"
+TEXT = "#e2e8f0"
+ACCENT = "#22c55e"
+WARN = "#f59e0b"
+DANGER = "#ef4444"
+
+def sleep_tip(hours):
+    if hours < 0 or hours > 12:
+        return "Invalid sleep input.\nRange: 0–12 hours."
+    elif hours < 5:
+        return "Low sleep.\nScience: Increases cortisol and reduces focus."
+    elif hours < 8:
+        return "Moderate sleep.\nScience: Improves memory and learning."
+    else:
+        return "Good sleep.\nScience: Boosts brain recovery and mood."
 
 def stress_tip(level):
-    tips = [
-        "You're feeling relaxed. Maintain this by keeping a balanced routine and taking short breaks.",
-        "Moderate stress detected. Try organizing your tasks and take breaks to avoid burnout.",
-        "High stress detected! Consider deep breathing, short walks, or talking to someone you trust."
-    ]
-
-    if level < 0 or level >= len(tips):
-        return "Invalid stress level selected."
-    return tips[level]
-
-
-def hydration_tip(cups):
-    if cups < 3:
-        return "You need more water. Dehydration can increase fatigue and stress. Aim for at least 6–8 cups daily."
-    elif 3 <= cups < 6:
-        return "You're doing okay, but drinking more water can improve focus and energy levels."
+    if level == 0:
+        return "Low stress.\nScience: Stable cortisol improves clarity."
+    elif level == 1:
+        return "Moderate stress.\nScience: Can improve short-term alertness."
     else:
-        return "Great hydration! Staying hydrated helps regulate mood and body functions."
+        return "High stress.\nScience: Long-term stress harms health."
 
+def hydration_tip(water):
+    if water < 0 or water > 20:
+        return "Invalid water input.\nRange: 0–20 cups."
+    elif water < 3:
+        return "Low hydration.\nScience: Causes fatigue and poor focus."
+    elif water < 6:
+        return "Moderate hydration.\nScience: Supports brain function."
+    else:
+        return "Good hydration.\nScience: Improves energy and cognition."
 
 def mood_tip(mood):
-    mood = mood.lower()
+    mood = mood.lower().strip()
     if mood == "happy":
-        return "Nice! Keep doing what makes you feel good and maintain your positive habits."
+        return "Happy.\nScience: Increases dopamine."
     elif mood == "neutral":
-        return "You're feeling okay. Try doing something enjoyable like listening to music or relaxing."
+        return "Neutral.\nScience: Balanced emotional state."
     elif mood == "stressed":
-        return "You're feeling stressed. Try deep breathing, journaling, or taking a short break."
-    else:
-        return "Mood not recognized, but remember to take care of yourself and rest when needed."
+        return "Stressed.\nScience: Raises cortisol levels."
+    return "Mood not recognized."
 
-
-def calculate_score(hours, stress, water):
-    score = 0
-
+def score(hours, stress, water):
+    s = 0
     if hours >= 8:
-        score += 4
+        s += 4
     elif hours >= 5:
-        score += 2
+        s += 2
+    else:
+        s += 1
 
-    score += (2 - stress)
+    if stress == 0:
+        s += 3
+    elif stress == 1:
+        s += 2
+    else:
+        s += 1
 
     if water >= 6:
-        score += 3
+        s += 3
     elif water >= 3:
+        s += 1
+
+    return s
+
+def feedback(s):
+    if s >= 9:
+        return "Excellent wellness"
+    elif s >= 6:
+        return "Good wellness"
+    return "Needs improvement"
+
+def validate(h, w):
+    if h > 12:
+        return False, "Sleep cannot exceed 12 hours"
+    if w > 20:
+        return False, "Water cannot exceed 20 cups"
+    return True, ""
+
+def run():
+    try:
+        h = float(sleep_entry.get())
+        w = int(water_entry.get())
+        m = mood_entry.get()
+        s = int(stress_var.get())
+
+        ok, msg = validate(h, w)
+        if not ok:
+            messagebox.showwarning("Invalid Input", msg)
+            return
+
+        result = (
+            "WELLNESS REPORT\n\n"
+            f"{sleep_tip(h)}\n\n"
+            f"{stress_tip(s)}\n\n"
+            f"{hydration_tip(w)}\n\n"
+            f"{mood_tip(m)}\n\n"
+        )
+
+        sc = score(h, s, w)
+        result += f"Score: {sc}/10\n{feedback(sc)}"
+
+        result_label.config(text=result)
+        history.insert(tk.END, f"{sc}/10 | Sleep:{h}h | Water:{w}")
+
+    except:
+        messagebox.showerror("Error", "Invalid input")
+
+def clear():
+    sleep_entry.delete(0, tk.END)
+    water_entry.delete(0, tk.END)
+    mood_entry.delete(0, tk.END)
+    stress_var.set("0")
+    result_label.config(text="")
+
+def remove():
+    try:
+        history.delete(history.curselection())
+    except:
+        pass
+
+root = tk.Tk()
+root.title("Stress Management Program")
+root.geometry("550x700")
+root.configure(bg=BG)
+
+title = tk.Label(
+    root,
+    text="Stress Management Program",
+    bg=BG,
+    fg=TEXT,
+    font=("Arial", 16, "bold")
+)
+title.pack(pady=10)
+
+input_card = tk.Frame(root, bg=CARD, padx=15, pady=15)
+input_card.pack(padx=15, pady=10, fill="x")
+
+tk.Label(input_card, text="Sleep Hours (0–12)", bg=CARD, fg=TEXT).pack(anchor="w")
+sleep_entry = tk.Entry(input_card)
+sleep_entry.pack(fill="x", pady=5)
+
+tk.Label(input_card, text="Stress Level", bg=CARD, fg=TEXT).pack(anchor="w")
+stress_var = tk.StringVar(value="0")
+
+stress_frame = tk.Frame(input_card, bg=CARD)
+stress_frame.pack()
+
+tk.Radiobutton(stress_frame, text="Low", variable=stress_var, value="0", bg=CARD, fg=TEXT, selectcolor=BG).pack(side="left")
+tk.Radiobutton(stress_frame, text="Medium", variable=stress_var, value="1", bg=CARD, fg=TEXT, selectcolor=BG).pack(side="left")
+tk.Radiobutton(stress_frame, text="High", variable=stress_var, value="2", bg=CARD, fg=TEXT, selectcolor=BG).pack(side="left")
+
+tk.Label(input_card, text="Water Intake (cups 0–20)", bg=CARD, fg=TEXT).pack(anchor="w")
+water_entry = tk.Entry(input_card)
+water_entry.pack(fill="x", pady=5)
+
+tk.Label(input_card, text="Mood (happy / neutral / stressed)", bg=CARD, fg=TEXT).pack(anchor="w")
+mood_entry = tk.Entry(input_card)
+mood_entry.pack(fill="x", pady=5)
+
+btn_frame = tk.Frame(root, bg=BG)
+btn_frame.pack(pady=10)
+
+tk.Button(btn_frame, text="Analyze", command=run, bg=ACCENT, fg="black", width=12).grid(row=0, column=0, padx=5)
+tk.Button(btn_frame, text="Clear", command=clear, bg=WARN, fg="black", width=10).grid(row=0, column=1, padx=5)
+tk.Button(btn_frame, text="Remove", command=remove, bg=DANGER, fg="white", width=10).grid(row=0, column=2, padx=5)
+
+result_card = tk.Frame(root, bg=CARD, padx=15, pady=15)
+result_card.pack(padx=15, pady=10, fill="both", expand=True)
+
+result_label = tk.Label(
+    result_card,
+    text="",
+    bg=CARD,
+    fg=TEXT,
+    justify="left",
+    wraplength=480
+)
+result_label.pack()
+
+tk.Label(root, text="History", bg=BG, fg=TEXT).pack()
+history = tk.Listbox(root, height=6, bg=CARD, fg=TEXT)
+history.pack(padx=15, pady=10, fill="both")
+
+root.mainloop()
