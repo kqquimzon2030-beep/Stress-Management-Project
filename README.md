@@ -25,7 +25,7 @@ To help students stay healthy and do better in school by controlling stress. The
 
 ## Code Examples
 ```python
-import tkinter as tk
+        import tkinter as tk
 from tkinter import messagebox
 def sleep_tip(hours_slept):
     if hours_slept < 0:
@@ -84,88 +84,3 @@ def calculate_score(hours, stress, water):
     if water >= 6:
         score += 3
     elif water >= 3:
-        score += 1
-
-    return score
-
-
-def wellness_feedback(score):
-    if score >= 8:
-        return "Excellent wellness! You're taking great care of yourself."
-    elif 5 <= score < 8:
-        return "Good job! There are a few areas you can still improve."
-    else:
-        return "You might need to focus more on your health and stress management."
-
-
-def get_results():
-    try:
-        hours = float(entry_sleep.get())
-        stress_level = int(stress_var.get())
-        water = int(entry_water.get())
-        mood = entry_mood.get()
-
-        sleep_message = sleep_tip(hours)
-        stress_message = stress_tip(stress_level)
-        water_message = hydration_tip(water)
-        mood_message = mood_tip(mood)
-
-        score = calculate_score(hours, stress_level, water)
-        feedback = wellness_feedback(score)
-
-        result_label.config(
-            text=(
-                f"--- RESULTS ---\n\n"
-                f"Sleep Tip:\n{sleep_message}\n\n"
-                f"Stress Tip:\n{stress_message}\n\n"
-                f"Hydration Tip:\n{water_message}\n\n"
-                f"Mood Tip:\n{mood_message}\n\n"
-                f"Wellness Score: {score}/10\n"
-                f"Feedback: {feedback}"
-            )
-        )
-
-    except ValueError:
-        messagebox.showerror("Input Error", "Please enter valid inputs.")
-
-
-root = tk.Tk()
-root.title("Advanced Stress & Sleep Helper")
-root.geometry("500x550")
-root.resizable(False, False)
-
-title_label = tk.Label(root, text="Stress & Sleep Wellness Checker", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-tk.Label(root, text="Hours of sleep:").pack()
-entry_sleep = tk.Entry(root)
-entry_sleep.pack(pady=5)
-
-tk.Label(root, text="Stress Level:").pack()
-stress_var = tk.StringVar(value="0")
-
-frame = tk.Frame(root)
-frame.pack()
-
-tk.Radiobutton(frame, text="Low (0)", variable=stress_var, value="0").pack(anchor='w')
-tk.Radiobutton(frame, text="Medium (1)", variable=stress_var, value="1").pack(anchor='w')
-tk.Radiobutton(frame, text="High (2)", variable=stress_var, value="2").pack(anchor='w')
-
-tk.Label(root, text="Cups of water today:").pack()
-entry_water = tk.Entry(root)
-entry_water.pack(pady=5)
-
-tk.Label(root, text="Mood (happy / neutral / stressed):").pack()
-entry_mood = tk.Entry(root)
-entry_mood.pack(pady=5)
-
-btn = tk.Button(root, text="Get Advice", command=get_results)
-btn.pack(pady=10)
-
-result_label = tk.Label(root, text="", wraplength=450, justify="left")
-result_label.pack(pady=10)
-
-footer = tk.Label(root, text="Tip: Small daily habits lead to big improvements!", font=("Arial", 9, "italic"))
-footer.pack(side="bottom", pady=10)
-
-root.mainloop()
